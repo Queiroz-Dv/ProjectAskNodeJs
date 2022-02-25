@@ -6,6 +6,25 @@
     <br>
     <h1><%= ask.title %></h1>
     <p><%= ask.description%></p>
+    <br>
+    <form method="post" action="/reply">
+      <h3>Reply</h3>
+      <label>Answer</label>
+      <textarea class="form-control" placeholder="Type your answer here" name="body"></textarea><br>
+      <input type="hidden" name="ask" value="<%= ask.id %> ">
+      <button type="submit" class="btn btn-primary">Reply</button>
+    </form>
+    <hr>
+    <h3>Replies</h3>
+    <hr>
+    <% replyes.forEach(reply => { %>
+    <br>
+    <div class="card">
+      <div class="card-body">
+        <p><%=  reply.body %></p>
+      </div>
+    </div>
+    <% }) %>
   </div>
 </body>
 <%- include ('partials/footer.ejs') %>

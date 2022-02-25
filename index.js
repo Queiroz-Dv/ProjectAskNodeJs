@@ -4,9 +4,8 @@ const app = express();//Instance of express
 const bodyParser = require("body-parser");
 const connection = require("./database/database");
 const Asking = require("./database/Asking");
-const { response } = require("express");
 const Ask = require("./database/Asking");
-const res = require("express/lib/response");
+const Answer = require("./database/Answer");
 //Using Body-Parser
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -58,12 +57,31 @@ app.get("/ask/:id", (request, response) => {
     where: { id: id }
   }).then(ask => {
     if (ask != undefined) { //Found
-      response.render("asking", {
-        ask: ask
+
+      Answer.findAll({
+        where: { askId: ask.id },
+        order: [['id', 'DESC']]
+      }).then(replyes => {
+        response.render("asking", {
+          ask: ask,
+          replyes: replyes
+        });
       });
     } else { //Not Found
       response.redirect("/");
     }
+  });
+});
+
+app.post("/reply", (request, response) => {
+  var body = request.body.body;
+  var askId = request.body.ask;
+
+  Answer.create({
+    body: body,
+    askId: askId
+  }).then(() => {
+    response.redirect("/ask/" + askId);
   });
 });
 app.listen(1700);
